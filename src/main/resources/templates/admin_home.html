@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Event Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0f172a 60%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            padding-bottom: 50px;
+        }
+        header {
+            background: rgba(30, 41, 59, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 16px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(to right, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logout-btn:hover {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .welcome-sec {
+            margin-bottom: 40px;
+        }
+        .welcome-sec h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .welcome-sec p {
+            color: #94a3b8;
+            font-weight: 300;
+        }
+        /* Statistics Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 45px;
+        }
+        .stat-card {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            border-color: rgba(167, 139, 250, 0.3);
+            transform: translateY(-4px);
+        }
+        .stat-info h3 {
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .stat-info .value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .stat-icon-events {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .stat-icon-registrations {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .stat-icon-upcoming {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        .stat-icon-depts {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        /* Navigation Links Grid */
+        .admin-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        .nav-card {
+            background: rgba(30, 41, 59, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 40px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            z-index: 0;
+        }
+        .nav-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(236, 72, 153, 0.3);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.1);
+        }
+        .nav-card-header i {
+            font-size: 32px;
+            color: #ec4899;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .nav-card-header h4 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .nav-card-header p {
+            color: #94a3b8;
+            font-weight: 300;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        .nav-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #c084fc;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 25px;
+            z-index: 5;
+        }
+        .nav-card:hover .nav-card-footer i {
+            transform: translateX(5px);
+        }
+        .nav-card-footer i {
+            transition: transform 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <i class="fas fa-user-shield"></i> Event Hub Admin
+        </a>
+        <a href="/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="welcome-sec">
+            <h2>Welcome, Admin</h2>
+            <p>Monitor event metrics and manage system registrations</p>
+        </div>
+
+        <!-- 4 Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Events</h3>
+                    <div class="value" th:text="${totalEvents}">4</div>
+                </div>
+                <div class="stat-icon stat-icon-events">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Registrations</h3>
+                    <div class="value" th:text="${totalRegistrations}">85</div>
+                </div>
+                <div class="stat-icon stat-icon-registrations">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Upcoming Events</h3>
+                    <div class="value" th:text="${upcomingEvents}">2</div>
+                </div>
+                <div class="stat-icon stat-icon-upcoming">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Participating Depts</h3>
+                    <div class="value" th:text="${participatingDepartments}">7</div>
+                </div>
+                <div class="stat-icon stat-icon-depts">
+                    <i class="fas fa-building-columns"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Panels -->
+        <div class="admin-nav-grid">
+            <a href="/admin/registrations" class="nav-card">
+                <div class="nav-card-header">
+                    <i class="fas fa-users-gear"></i>
+                    <h4>Manage Registrations</h4>
+                    <p>Search registrations by Name, Reg No, Department or Event. Approve statuses, filter data, and export to Excel, PDF or CSV.</p>
+                </div>
+                <div class="nav-card-footer">
+                    <span>Manage registrations</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/schedule" class="nav-card">
+                <div class="nav-card-header">
+                    <i class="fas fa-calendar-days"></i>
+                    <h4>Event Calendar & Schedule</h4>
+                    <p>Review the master schedule of events, active speakers, venues, and timings in a clean calendar-friendly view.</p>
+                </div>
+                <div class="nav-card-footer">
+                    <span>View schedule</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <a href="/admin/events/new" class="nav-card">
+                <div class="nav-card-header">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h4>Create New Event</h4>
+                    <p>Publish a new college event, configure date, venue, speaker details, capacity limits, and banner images.</p>
+                </div>
+                <div class="nav-card-footer">
+                    <span>Create event</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

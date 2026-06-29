@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Registrations - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0f172a 60%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            padding-bottom: 50px;
+        }
+        header {
+            background: rgba(30, 41, 59, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 16px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(to right, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logout-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-success {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #86efac;
+        }
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+        /* Search & Filter panel */
+        .filter-panel {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: flex-end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .form-group label {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .form-control:focus {
+            border-color: #a78bfa;
+        }
+        select.form-control option {
+            background: #0f172a;
+            color: #fff;
+        }
+        .btn-filter {
+            background: #8b5cf6;
+            color: #fff;
+            border: none;
+            padding: 11px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .btn-filter:hover {
+            background: #7c3aed;
+        }
+        .clear-link {
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 10px 0;
+            display: block;
+        }
+        .clear-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+        /* Export Row */
+        .export-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .export-row h3 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-export {
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .btn-csv {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .btn-csv:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .btn-excel {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .btn-excel:hover {
+            background: #10b981;
+            color: #fff;
+        }
+        .btn-pdf {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .btn-pdf:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        /* Registrations Grid Panel */
+        .table-panel {
+            background: rgba(30, 41, 59, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .student-name {
+            font-weight: 600;
+            color: #fff;
+            display: block;
+        }
+        .student-email {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .status-select {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .status-select:focus {
+            border-color: #a78bfa;
+        }
+        /* Style depending on selected value */
+        .status-select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #64748b;
+        }
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <i class="fas fa-user-shield"></i> Event Hub Admin
+        </a>
+        <div class="header-actions">
+            <a href="/admin/home" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Dashboard
+            </a>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Banner notification checks -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fas fa-circle-check"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <i class="fas fa-circle-exclamation"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Search and Filters Panel -->
+        <div class="filter-panel">
+            <form th:action="@{/admin/registrations}" method="get" class="filter-form">
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" name="searchName" th:value="${searchName}" class="form-control" placeholder="Search by name..." />
+                </div>
+                
+                <div class="form-group">
+                    <label>Register Number</label>
+                    <input type="text" name="registerNumber" th:value="${registerNumber}" class="form-control" placeholder="Search by register no..." />
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" name="department" th:value="${department}" class="form-control" placeholder="Search by department..." />
+                </div>
+
+                <div class="form-group">
+                    <label>Event Name</label>
+                    <select name="eventName" class="form-control">
+                        <option value="">All Events</option>
+                        <option th:each="e : ${events}" th:value="${e.name}" th:text="${e.name}"
+                                th:selected="${e.name == selectedEventName}">Event Name</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-filter"><i class="fas fa-magnifying-glass"></i> Filter</button>
+            </form>
+            <a href="/admin/registrations" class="clear-link">Reset all search filters</a>
+        </div>
+
+        <!-- Export Actions & Title -->
+        <div class="export-row">
+            <h3 th:text="${#lists.size(registrations) + ' Registrations Found'}">25 Registrations Found</h3>
+            <div class="export-buttons" th:if="${not #lists.isEmpty(registrations)}">
+                <a th:href="@{/admin/export/csv(eventName=${selectedEventName}, searchName=${searchName}, registerNumber=${registerNumber}, department=${department})}" class="btn-export btn-csv">
+                    <i class="fas fa-file-csv"></i> Export CSV
+                </a>
+                <a th:href="@{/admin/export/excel(eventName=${selectedEventName}, searchName=${searchName}, registerNumber=${registerNumber}, department=${department})}" class="btn-export btn-excel">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </a>
+                <a th:href="@{/admin/export/pdf(eventName=${selectedEventName}, searchName=${searchName}, registerNumber=${registerNumber}, department=${department})}" class="btn-export btn-pdf">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </a>
+            </div>
+        </div>
+
+        <!-- Registrations Table -->
+        <div class="table-panel">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Reg No</th>
+                            <th>Department</th>
+                            <th>Event Registered</th>
+                            <th>Reg Date</th>
+                            <th>Status Badge</th>
+                            <th>Change Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${registrations}">
+                            <td>
+                                <span class="student-name" th:text="${r.student.name}">Alex Mercer</span>
+                                <span class="student-email" th:text="${r.student.username}">student@college.edu</span>
+                            </td>
+                            <td th:text="${r.registerNumber}">2024001</td>
+                            <td th:text="${r.department}">Computer Science</td>
+                            <td>
+                                <strong style="color: #cbd5e1;" th:text="${r.event.name}">Coding Workshop</strong>
+                            </td>
+                            <td th:text="${#temporals.format(r.registrationDate, 'dd MMM yyyy')}">01 Nov 2025</td>
+                            <td>
+                                <!-- Status Badge colors -->
+                                <span th:if="${r.status == T(com.college.eventreg.model.RegistrationStatus).CONFIRMED}" style="color: #4ade80; font-size: 13px; font-weight: 600;">
+                                    <i class="fas fa-circle-check"></i> Confirmed
+                                </span>
+                                <span th:if="${r.status == T(com.college.eventreg.model.RegistrationStatus).CANCELLED}" style="color: #f87171; font-size: 13px; font-weight: 600;">
+                                    <i class="fas fa-circle-xmark"></i> Cancelled
+                                </span>
+                            </td>
+                            <td>
+                                <!-- Dropdown changes status instantly on selection -->
+                                <form th:action="@{'/admin/registrations/status/' + ${r.id}}" method="post">
+                                    <select name="status" onchange="this.form.submit()" class="status-select">
+                                        <option value="CONFIRMED" th:selected="${r.status == T(com.college.eventreg.model.RegistrationStatus).CONFIRMED}">Confirmed</option>
+                                        <option value="CANCELLED" th:selected="${r.status == T(com.college.eventreg.model.RegistrationStatus).CANCELLED}">Cancelled</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(registrations)}">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>No registrations match the selected filters.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

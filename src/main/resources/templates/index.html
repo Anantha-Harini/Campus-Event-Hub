@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Event Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #f8fafc;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Dynamic Background Glows */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        body::before {
+            background: #8b5cf6;
+            top: 10%;
+            left: 15%;
+        }
+        body::after {
+            background: #ec4899;
+            bottom: 10%;
+            right: 15%;
+        }
+        .container {
+            z-index: 10;
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+        .logo-badge {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #c084fc;
+        }
+        h1 {
+            font-size: 54px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #f8fafc, #cbd5e1, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            font-size: 19px;
+            color: #94a3b8;
+            margin-bottom: 45px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 16px 36px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: #fff;
+            border: none;
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -5px rgba(139, 92, 246, 0.6);
+        }
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.6);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover {
+            transform: translateY(-4px);
+            background: rgba(30, 41, 59, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        footer {
+            position: absolute;
+            bottom: 30px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-badge">
+            <i class="fas fa-sparkles"></i> College Events 2026
+        </div>
+        <h1>Campus Event Hub</h1>
+        <p class="subtitle">Experience university life like never before. Seamlessly discover upcoming workshops, cultural festivals, sports activities, and tech conferences, and claim your seat instantly.</p>
+        
+        <div class="actions">
+            <a href="/login" class="btn btn-primary">
+                <span>Sign In to Dashboard</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="/signup" class="btn btn-secondary">
+                <span>Create Student Account</span>
+            </a>
+        </div>
+    </div>
+    <footer>
+        &copy; 2026 Campus Event Registration System. All rights reserved.
+    </footer>
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Event Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #0f172a 60%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            padding-bottom: 50px;
+        }
+        header {
+            background: rgba(30, 41, 59, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 16px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(to right, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-details {
+            text-align: right;
+            font-size: 14px;
+        }
+        .user-details .name {
+            font-weight: 600;
+            color: #f8fafc;
+        }
+        .user-details .info {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 300;
+        }
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logout-btn:hover {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-success {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #86efac;
+        }
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+        .section-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i {
+            color: #8b5cf6;
+        }
+        /* Event Cards Grid */
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+        .event-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .event-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 15px 30px rgba(139, 92, 246, 0.15);
+        }
+        .event-banner {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .event-date-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .event-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #f8fafc;
+        }
+        .event-speaker {
+            font-size: 13px;
+            color: #c084fc;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .event-desc {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 300;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .event-details {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        .event-details div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .event-details i {
+            color: #64748b;
+            width: 16px;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-register {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: #fff;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        .btn-registered {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            cursor: default;
+        }
+        .btn-full {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+            cursor: default;
+        }
+        /* Registrations Card & Table */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 15px;
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-confirmed {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+        .badge-cancelled {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+        .btn-cancel {
+            background: transparent;
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-cancel:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 15px;
+        }
+        .empty-state i {
+            font-size: 36px;
+            margin-bottom: 12px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <i class="fas fa-graduation-cap"></i> Event Hub
+        </a>
+        <div class="user-meta" th:if="${student}">
+            <div class="user-details">
+                <div class="name" th:text="${student.name}">Alex Mercer</div>
+                <div class="info" th:text="${student.registerNumber + ' | ' + student.department}">2024001 | CS</div>
+            </div>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Banner notification logs -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fas fa-circle-check"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <i class="fas fa-circle-exclamation"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Section 1: Available Events -->
+        <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Discover Events</h2>
+        <div class="event-grid">
+            <div class="event-card" th:each="e : ${events}">
+                <!-- Banner Image representing the Event -->
+                <div class="event-banner" th:style="'background-image: url(' + ${e.bannerUrl} + ')'">
+                    <div class="event-date-badge">
+                        <span th:text="${#temporals.format(e.eventDate, 'dd MMM yyyy')}">10 Nov 2025</span>
+                    </div>
+                </div>
+                <div class="event-content">
+                    <h3 class="event-title" th:text="${e.name}">Coding Workshop</h3>
+                    <div class="event-speaker" th:text="${'Hosted by: ' + e.speaker}">Hosted by: Dr. Clara Oswald</div>
+                    <p class="event-desc" th:text="${e.description}">Learn Java & Spring Boot backend development by building practical projects.</p>
+                    
+                    <div class="event-details">
+                        <div>
+                            <i class="fas fa-location-dot"></i>
+                            <span th:text="${e.venue}">Turing Lab, 2nd Floor</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-clock"></i>
+                            <span th:text="${#temporals.format(e.eventDate, 'hh:mm a')}">10:00 AM</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-users"></i>
+                            <span th:with="activeSeats=${regService.getActiveRegistrationsCount(e)}">
+                                Seats: <strong th:text="${e.capacity}">50</strong> | 
+                                Registered: <strong th:text="${activeSeats}">42</strong> | 
+                                Available: <strong th:text="${e.capacity - activeSeats}">8</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Register Action Handlers -->
+                    <th:block th:with="isRegistered=${#lists.contains(registeredEventIds, e.id)}">
+                        <!-- Case 1: Already Registered -->
+                        <div th:if="${isRegistered}">
+                            <button class="btn-action btn-registered" disabled>
+                                <i class="fas fa-check"></i> Registered
+                            </button>
+                        </div>
+                        <!-- Case 2: Available to Register -->
+                        <div th:unless="${isRegistered}">
+                            <th:block th:with="activeSeats=${regService.getActiveRegistrationsCount(e)}">
+                                <form th:if="${activeSeats < e.capacity}" th:action="@{'/user/register/' + ${e.id}}" method="post">
+                                    <button type="submit" class="btn-action btn-register">Register Now</button>
+                                </form>
+                                <button th:unless="${activeSeats < e.capacity}" class="btn-action btn-full" disabled>
+                                    Registration Closed
+                                </button>
+                            </th:block>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Personal Registrations -->
+        <h2 class="section-title"><i class="fas fa-ticket"></i> My Registered Tickets</h2>
+        <div class="glass-panel">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event Details</th>
+                            <th>Venue</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${registrations}">
+                            <td>
+                                <strong style="color: #fff; display: block;" th:text="${r.event.name}">Coding Workshop</strong>
+                                <span style="font-size: 12px; color: #64748b;" th:text="${'Registered on: ' + #temporals.format(r.registrationDate, 'dd MMM, hh:mm a')}">Registered: 01 Nov</span>
+                            </td>
+                            <td th:text="${r.event.venue}">Turing Lab</td>
+                            <td th:text="${#temporals.format(r.event.eventDate, 'dd MMM yyyy, hh:mm a')}">10 Nov 2025, 10:00 AM</td>
+                            <td>
+                                <!-- Status Badges -->
+                                <span th:if="${r.status == T(com.college.eventreg.model.RegistrationStatus).CONFIRMED}" class="badge badge-confirmed">
+                                    <i class="fas fa-circle-check"></i> Confirmed
+                                </span>
+                                <span th:if="${r.status == T(com.college.eventreg.model.RegistrationStatus).CANCELLED}" class="badge badge-cancelled">
+                                    <i class="fas fa-circle-xmark"></i> Cancelled
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <!-- Download Pass (Only for Confirmed tickets) -->
+                                    <a th:if="${r.status == T(com.college.eventreg.model.RegistrationStatus).CONFIRMED}" 
+                                       th:href="@{'/user/registrations/' + ${r.id} + '/pass'}" 
+                                       class="btn-pass" style="text-decoration: none; padding: 6px 12px; border-radius: 8px; background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #fff; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: all 0.3s;"
+                                       onmouseover="this.style.background='rgba(139, 92, 246, 0.4)'" onmouseout="this.style.background='rgba(139, 92, 246, 0.2)'">
+                                        <i class="fas fa-file-pdf"></i> Pass
+                                    </a>
+
+                                    <!-- Cancellation Trigger -->
+                                    <form th:if="${r.status != T(com.college.eventreg.model.RegistrationStatus).CANCELLED}" 
+                                          th:action="@{'/user/cancel/' + ${r.id}}" method="post" 
+                                          onsubmit="return showCustomConfirm('Are you sure you want to cancel this registration?', this)"
+                                          style="display: inline;">
+                                        <button type="submit" class="btn-cancel">Cancel Ticket</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(registrations)}">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fas fa-ticket-simple"></i>
+                                    <span>You haven't registered for any events yet.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="customConfirmModal" class="confirm-modal-overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="confirm-modal-card" style="background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; max-width: 450px; width: 90%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <i class="fas fa-triangle-exclamation" style="font-size: 40px; color: #f59e0b; margin-bottom: 20px;"></i>
+            <h3 style="font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 12px;">Confirm Action</h3>
+            <p id="customConfirmText" style="font-size: 14px; color: #cbd5e1; margin-bottom: 24px; line-height: 1.5;">Do you really want to proceed?</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="customConfirmCancel" type="button" style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #cbd5e1; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">No, Go Back</button>
+                <button id="customConfirmYes" type="button" style="flex: 1; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Yes, Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingFormSubmit = null;
+
+        function showCustomConfirm(message, formElement) {
+            pendingFormSubmit = formElement;
+            document.getElementById('customConfirmText').innerText = message;
+            document.getElementById('customConfirmModal').style.display = 'flex';
+            return false;
+        }
+
+        document.getElementById('customConfirmCancel').addEventListener('click', function() {
+            document.getElementById('customConfirmModal').style.display = 'none';
+            pendingFormSubmit = null;
+        });
+
+        document.getElementById('customConfirmYes').addEventListener('click', function() {
+            if (pendingFormSubmit) {
+                pendingFormSubmit.submit();
+            }
+        });
+    </script>
+</body>
+</html>
