@@ -159,25 +159,6 @@ docker run -p 8080:8080 \
   -e DATABASE_PASSWORD=your_password \
   event-management-system
 ```
-
----
-
-## ☁️ Deploy to Render.com
-
-1. Push your code to GitHub
-2. Create a **Free PostgreSQL** database on [Render](https://render.com)
-3. Create a **Web Service** → connect your GitHub repo → Render auto-detects the `Dockerfile`
-4. Add environment variables:
-
-| Key | Value |
-|-----|-------|
-| `DATABASE_URL` | `jdbc:postgresql://...` (from your Render DB) |
-| `DATABASE_USERNAME` | From Render DB |
-| `DATABASE_PASSWORD` | From Render DB |
-| `PORT` | `8080` |
-
-5. Deploy — you'll get a public `https://your-app.onrender.com` URL
-
 ---
 
 ## 📊 API Routes
