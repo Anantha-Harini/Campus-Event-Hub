@@ -161,30 +161,6 @@ docker run -p 8080:8080 \
 ```
 ---
 
-## 📊 API Routes
-
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| GET | `/` | Public | Landing page |
-| GET | `/login` | Public | Login page |
-| GET/POST | `/signup` | Public | Student registration |
-| GET | `/schedule` | Authenticated | Browse all events |
-| GET | `/user/home` | Student | Student dashboard |
-| POST | `/user/register/{eventId}` | Student | Register for event |
-| POST | `/user/cancel/{regId}` | Student | Cancel registration |
-| GET | `/user/registrations/{regId}/pass` | Student | Download PDF entry pass |
-| GET | `/admin/home` | Admin | Admin dashboard |
-| GET/POST | `/admin/events/new` | Admin | Create event |
-| GET/POST | `/admin/events/edit/{id}` | Admin | Edit event |
-| POST | `/admin/events/delete/{id}` | Admin | Delete event |
-| GET | `/admin/registrations` | Admin | View all registrations |
-| POST | `/admin/registrations/status/{id}` | Admin | Update registration status |
-| GET | `/admin/export/csv` | Admin | Export as CSV |
-| GET | `/admin/export/excel` | Admin | Export as Excel |
-| GET | `/admin/export/pdf` | Admin | Export as PDF report |
-
----
-
 ## 📝 License
 
 This project is open source and available under the [MIT License](LICENSE).
