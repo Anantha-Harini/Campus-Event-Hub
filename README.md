@@ -1,27 +1,31 @@
-# 🎓 Campus Event Management System
+#  Campus Event Hub
 
 A full-stack **event management platform** built for colleges and universities. Students can browse events, register with one click, and download PDF entry passes with QR codes. Administrators get a powerful dashboard to manage events, track registrations, and export reports.
 
 Built with **Spring Boot 3.5**, **Thymeleaf**, **Spring Security**, **PostgreSQL**, and **OpenPDF + ZXing**.
 
+> **For Live Website -** **[Click here](https://campus-event-hub-7zct.onrender.com)**
+
+<img width="1280" height="720" alt="Event_Hub_simulation_final2" src="https://github.com/user-attachments/assets/c57829c5-6f73-45d2-8e37-d7aeaf44a882" />
+
 ---
 
-## ✨ Features
+##  Features
 
-### 🎓 Student Portal
+###  Student Portal
 - **Browse Events** — View all upcoming campus events with banners, dates, venues, and seat availability
 - **One-Click Registration** — Register for events instantly (capacity-enforced)
 - **PDF Entry Pass** — Download a styled entry pass with a **QR code** for gate verification
 - **Cancellation & Re-registration** — Cancel tickets and re-register anytime if seats are available
 - **Personal Dashboard** — View all your registrations with status badges
 
-### 🔐 Admin Dashboard
+###  Admin Dashboard
 - **Event CRUD** — Create, edit, and delete events with banner images
 - **Registration Management** — View all registrations, filter by name/department/event, update statuses
 - **Data Export** — Export registration data as **CSV**, **Excel (.xlsx)**, or **PDF** reports
 - **Analytics Overview** — Total events, registrations, departments, and capacity utilization
 
-### 🔒 Security
+###  Security
 - **Role-Based Access Control** — Separate student and admin roles with Spring Security
 - **BCrypt Password Hashing** — All passwords are securely hashed
 - **Session-Based Authentication** — Secure login/logout with CSRF protection
@@ -29,7 +33,7 @@ Built with **Spring Boot 3.5**, **Thymeleaf**, **Spring Security**, **PostgreSQL
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -44,7 +48,7 @@ Built with **Spring Boot 3.5**, **Thymeleaf**, **Spring Security**, **PostgreSQL
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 src/main/java/com/college/eventreg/
@@ -71,7 +75,7 @@ src/main/java/com/college/eventreg/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -121,11 +125,11 @@ On first startup, a default admin account is created:
 - **Email:** `admin@college.edu`
 - **Password:** `admin123`
 
-> ⚠️ **Change this password** after your first login in a production environment.
+>  **Change this password** after your first login in a production environment.
 
 ---
 
-## 🧪 Running Tests
+##  Running Tests
 
 The test suite includes **unit tests** and **integration tests** that run against an in-memory H2 database (no PostgreSQL required).
 
@@ -147,7 +151,7 @@ The test suite includes **unit tests** and **integration tests** that run agains
 
 ---
 
-## 🐳 Docker
+##  Docker
 
 Build and run with Docker:
 
@@ -161,6 +165,6 @@ docker run -p 8080:8080 \
 ```
 ---
 
-## 📝 License
+##  License
 
 This project is open source and available under the [MIT License](LICENSE).
