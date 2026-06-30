@@ -119,7 +119,7 @@ public class EventController {
 
         try {
             registrationService.registerStudentToEvent(student, event);
-            redirectAttrs.addFlashAttribute("successMessage", "Successfully registered for " + event.getName() + "! Confirmation email sent.");
+            redirectAttrs.addFlashAttribute("successMessage", "Successfully registered for " + event.getName() + "!");
         } catch (IllegalStateException e) {
             redirectAttrs.addFlashAttribute("errorMessage", e.getMessage());
         }
